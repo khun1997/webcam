@@ -1,111 +1,100 @@
 import React, { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import "./WebcamStyle.css";
+import { useEffect } from "react";
 
 const MainWebCam = () => {
   const webcamRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   const [pic, setPic] = useState(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [data,setData] = useState([])
+  const [captureLoading, setCaptureLoading] = useState(false);
+
   const videoConstraints = {
     width: 400,
     height: 400,
     aspectRatio: 0.7,
     facingMode: "user",
   };
-  const capturePic = useCallback(
-    (e) => {
-      const Image = webcamRef.current.getScreenshot();
-      setPic(Image);
-    },
-    [webcamRef]
-  );
+
+  useEffect(() => {
+    const userMedia = async () => {
+      setLoading(true);
+      try {
+        const steam = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        webcamRef.current.srcObject = steam;
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+    userMedia();
+  }, [webcamRef]);
+
+  const capturePic = useCallback(() => {
+    setCaptureLoading(true);
+    const Image = webcamRef.current.getScreenshot();
+    setPic(Image);
+    setCaptureLoading(false);
+  }, [webcamRef]);
 
   const retakePic = () => {
-    setPic(null);
+    setCaptureLoading(true);
+    setTimeout(() => {
+      setPic(null);
+      console.log("star");
+    }, 100);
   };
 
-  const handleSubmit = (e) => {
-    setName("");
-    setEmail("");
-    setData(data)
-    // e.preventDefault();
-    console.log(name)
-    console.log(email``)
-  };
-  const handleName = (e) => {
-    setName({name:e.target.value});
-    // e.preventDefault();
-  };
-  const handleEmail = (e) => {
-    setEmail({email:e.target.value});
-    // e.preventDefault();
-  };
   return (
     <div className="mainContainer">
-      <form className="formContainer" onSubmit={() => handleSubmit()}>
-        {pic === null ? (
-          <>
-            <Webcam
-              className="webcam"
-              width={400}
-              height={400}
-              audio={false}
-              mirrored={true}
-              imageSmoothing={true}
-              videoConstraints={videoConstraints}
-              ref={webcamRef}
-            />
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                capturePic();
-              }}
-            >
-              Capture
-            </button>
-          </>
-        ) : (
-          <>
-            <img src={pic} />
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                retakePic();
-              }}
-            >
-              ReCapture
-            </button>
-          </>
-        )}
-
-        <div className="inputContainer">
-          <input type="text" placeholder="username" onChange={()=>handleName} />
-          <input type="text" placeholder="email" onChange={()=>handleEmail} />
-          <button type="submit">Submit</button>
-        </div>
-
-        <p>{name}</p>
-      <p>{email}</p>
-      <p>{data}</p>
-      </form>
-
-
-
-
-      {/* {pic !== null && name && email ? (
-        <>
-        <h1>hello</h1>
-          <div className="resultContainer">
-                <p>{name}</p>
-                <p>{email}</p>
-          </div>
-        </>
+      {loading ? (
+        <img
+          src="https://www.svgrepo.com/download/82100/loading.svg"
+          alt="loading"
+          className="loading"
+        />
       ) : (
-        <></>
-      )} */}
+        <>
+          {pic === null ? (
+            <>
+              <div className="webcamContainer">
+                <Webcam
+                  audio={false}
+                  mirrored={true}
+                  imageSmoothing={true}
+                  videoConstraints={videoConstraints}
+                  ref={webcamRef}
+                />
+              </div>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  capturePic();
+                }}
+              >
+                Capture
+              </button>
+            </>
+          ) : (
+            <>
+              {captureLoading ? (
+                <img
+                  src="https://www.svgrepo.com/download/82100/loading.svg"
+                  alt="loading"
+                  className="loading"
+                />
+              ) : (
+                <>
+                  <img src={pic} className="capImg" />
+                  <button onClick={retakePic}>ReCapture</button>
+                </>
+              )}
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 };
