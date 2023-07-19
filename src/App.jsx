@@ -1,11 +1,7 @@
 import "./App.css";
 import MainWebCam from "./components/mainWebCam/MainWebCam";
 function App() {
-  return (
-    <div >
-      <MainWebCam />
-    </div>
-  );
+  return <MainWebCam />;
 }
 
 export default App;

@@ -44,17 +44,17 @@ const MainWebCam = () => {
     setTimeout(() => {
       setPic(null);
       console.log("star");
-    }, 100);
+    }, 300);
   };
 
   return (
     <div className="mainContainer">
       {loading ? (
-        <img
-          src="https://www.svgrepo.com/download/82100/loading.svg"
-          alt="loading"
-          className="loading"
-        />
+        <>
+          <div class="loading-container">
+            <div class="loading-circle"></div>
+          </div>
+        </>
       ) : (
         <>
           {pic === null ? (
@@ -80,11 +80,11 @@ const MainWebCam = () => {
           ) : (
             <>
               {captureLoading ? (
-                <img
-                  src="https://www.svgrepo.com/download/82100/loading.svg"
-                  alt="loading"
-                  className="loading"
-                />
+                <>
+                  <div class="loading-container">
+                    <div class="loading-circle"></div>
+                  </div>
+                </>
               ) : (
                 <>
                   <img src={pic} className="capImg" />
