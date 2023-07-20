@@ -44,7 +44,7 @@ const MainWebCam = () => {
     setTimeout(() => {
       setPic(null);
       console.log("star");
-    }, 300);
+    }, 3300);
   };
 
   return (
@@ -60,13 +60,7 @@ const MainWebCam = () => {
           {pic === null ? (
             <>
               <div className="webcamContainer">
-                <Webcam
-                  audio={false}
-                  mirrored={true}
-                  imageSmoothing={true}
-                  videoConstraints={videoConstraints}
-                  ref={webcamRef}
-                />
+            //web
               </div>
               <button
                 onClick={(e) => {
@@ -80,15 +74,12 @@ const MainWebCam = () => {
           ) : (
             <>
               {captureLoading ? (
-                <>
-                  <div class="loading-container">
-                    <div class="loading-circle"></div>
-                  </div>
-                </>
+                <div className="loading-container">
+                  <div className="loading-circle"></div>
+                </div>
               ) : (
                 <>
                   <img src={pic} className="capImg" />
-                  <button onClick={retakePic}>ReCapture</button>
                 </>
               )}
             </>
